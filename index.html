@@ -3,441 +3,639 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HedgeNow Data Library · Interactive Tracker</title>
+    <title>HedgeNow · Asset Intelligence</title>
     
-    <!-- Fonts & Icons -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <!-- Font Awesome (stable CDN) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
-    <!-- Tailwind CSS (CDN) -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- React & ReactDOM (CDN) -->
-    <script crossorigin src="https://unpkg.com/react@18.2.0/umd/react.development.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.development.js"></script>
-    
-    <!-- Babel for JSX -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
         * {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-        }
-        body {
-            background: #0b0f15;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0a0c10;
+            color: #e5e7eb;
+            line-height: 1.5;
         }
-        ::-webkit-scrollbar-track {
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+        
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .logo-icon {
+            background: rgba(245, 158, 11, 0.1);
+            padding: 0.75rem;
+            border-radius: 12px;
+        }
+        
+        .logo-icon i {
+            font-size: 1.5rem;
+            color: #f59e0b;
+        }
+        
+        .title h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            background: linear-gradient(to right, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .title p {
+            color: #6b7280;
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+        }
+        
+        .update-badge {
             background: #1f2937;
+            padding: 0.5rem 1rem;
+            border-radius: 100px;
+            font-size: 0.85rem;
+            color: #9ca3af;
+            border: 1px solid #374151;
         }
-        ::-webkit-scrollbar-thumb {
-            background: #4b5563;
-            border-radius: 4px;
+        
+        .update-badge i {
+            color: #f59e0b;
+            margin-right: 0.5rem;
         }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #9ca3af;
+        
+        /* Filter bar */
+        .filter-bar {
+            background: #111827;
+            border: 1px solid #1f2937;
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
         }
-        /* Table row hover */
-        .hover-highlight:hover {
-            background-color: rgba(30, 41, 59, 0.8);
-            transition: background-color 0.2s;
+        
+        .filter-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #9ca3af;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        
+        .filter-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .filter-btn {
+            background: #1f2937;
+            border: 1px solid #374151;
+            color: #d1d5db;
+            padding: 0.5rem 1rem;
+            border-radius: 100px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .filter-btn:hover {
+            background: #2d3748;
+            border-color: #4b5563;
+        }
+        
+        .filter-btn.active {
+            background: rgba(245, 158, 11, 0.15);
+            border-color: #f59e0b;
+            color: #fbbf24;
+        }
+        
+        .filter-btn i {
+            font-size: 0.8rem;
+        }
+        
+        .info-note {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #1f2937;
+            color: #6b7280;
+            font-size: 0.8rem;
+        }
+        
+        .info-note i {
+            color: #f59e0b;
+            margin-right: 0.25rem;
+        }
+        
+        /* Table container */
+        .table-container {
+            background: #111827;
+            border: 1px solid #1f2937;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th {
+            text-align: left;
+            padding: 1rem 1rem;
+            background: #1a1f2e;
+            color: #9ca3af;
+            font-weight: 500;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+        
+        th:hover {
+            background: #242b3d;
+            color: #e5e7eb;
+        }
+        
+        th i {
+            margin-left: 0.5rem;
+            font-size: 0.7rem;
+            color: #6b7280;
+        }
+        
+        th.active-sort i {
+            color: #f59e0b;
+        }
+        
+        td {
+            padding: 1rem 1rem;
+            border-bottom: 1px solid #1f2937;
+            font-size: 0.9rem;
+        }
+        
+        tr:last-child td {
+            border-bottom: none;
+        }
+        
+        tbody tr {
+            transition: all 0.2s;
             cursor: pointer;
         }
-        .expanded-row {
-            background-color: #1e293b;
+        
+        tbody tr:hover {
+            background: #1c2333;
         }
-        /* Badge styling */
-        .badge-positive {
-            background-color: rgba(16, 185, 129, 0.2);
+        
+        .row-expanded {
+            background: #1a1f2e !important;
+            border-left: 3px solid #f59e0b;
+        }
+        
+        .asset-name {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .asset-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        
+        /* Value colors */
+        .text-positive {
             color: #10b981;
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 600;
         }
-        .badge-negative {
-            background-color: rgba(239, 68, 68, 0.2);
+        
+        .text-warning {
+            color: #f59e0b;
+        }
+        
+        .text-danger {
             color: #ef4444;
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
+        }
+        
+        .text-info {
+            color: #3b82f6;
+        }
+        
+        .text-muted {
+            color: #6b7280;
+        }
+        
+        .font-semibold {
             font-weight: 600;
         }
-        .badge-neutral {
-            background-color: rgba(156, 163, 175, 0.2);
+        
+        /* Expanded row details */
+        .expanded-content {
+            background: #1a1f2e;
+            padding: 1.5rem;
+        }
+        
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        
+        .detail-section h4 {
             color: #9ca3af;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.75rem;
+        }
+        
+        .detail-section p {
+            color: #e5e7eb;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        
+        .meta-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .meta-tag {
+            background: #1f2937;
+            padding: 0.35rem 0.75rem;
+            border-radius: 100px;
+            font-size: 0.8rem;
+            color: #d1d5db;
+            border: 1px solid #374151;
+        }
+        
+        .badge {
+            display: inline-flex;
+            align-items: center;
             padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
+            border-radius: 100px;
             font-size: 0.75rem;
-            font-weight: 600;
+            font-weight: 500;
+        }
+        
+        .badge-positive {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+        
+        .badge-negative {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+        
+        .badge-neutral {
+            background: rgba(107, 114, 128, 0.1);
+            color: #9ca3af;
+            border: 1px solid rgba(107, 114, 128, 0.2);
+        }
+        
+        /* Footer */
+        .footer {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            color: #4b5563;
+            font-size: 0.8rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #1f2937;
+        }
+        
+        .footer-links a {
+            color: #6b7280;
+            text-decoration: none;
+            margin-left: 1rem;
+        }
+        
+        .footer-links a:hover {
+            color: #f59e0b;
+        }
+        
+        .disclaimer {
+            margin-top: 1rem;
+            color: #374151;
+            font-size: 0.7rem;
+        }
+        
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #6b7280;
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
         }
     </style>
 </head>
-<body class="text-gray-200">
-
-<div id="root"></div>
-
-<script type="text/babel">
-
-// -------------------- MASTER DATA (March 2026) --------------------
-const ASSET_DATA = [
-  {
-    id: 1,
-    asset: "Gold (GLD)",
-    class: "commodity",
-    sixYearReturn: 0.98,
-    annualizedReturn: 0.148,
-    sharpe: 1.32,
-    maxDrawdown: 0.22,
-    ytd2026: 0.20,
-    liquidity: "Instant (T+1)",
-    minInvestment: "$1 (ETF) or physical from $50",
-    headline: "Central bank buying creates structural floor near $5,000. China's 16th consecutive month of purchases.",
-    source: "LBMA, Bloomberg, World Gold Council",
-    color: "amber"
-  },
-  {
-    id: 2,
-    asset: "UAE Residential Real Estate",
-    class: "uae",
-    sixYearReturn: 1.85,
-    annualizedReturn: 0.21,
-    sharpe: 1.10,
-    maxDrawdown: 0.12,
-    ytd2026: 0.14,
-    liquidity: "Weeks to months (direct property)",
-    minInvestment: "$250k–$400k (Dubai off-plan/prime resale)",
-    headline: "14% YTD price growth; 36,831 transactions in first 10 weeks of 2026. Prime areas outperform mid-market.",
-    source: "DLD, DXBInteract, Property Monitor",
-    color: "emerald"
-  },
-  {
-    id: 3,
-    asset: "Algo Crypto Hedge Funds",
-    class: "crypto",
-    sixYearReturn: 2.80,
-    annualizedReturn: 0.28,
-    sharpe: 0.90,
-    maxDrawdown: 0.25,
-    ytd2026: 0.12,
-    liquidity: "Quarterly with notice",
-    minInvestment: "$100k–$1M (fund minimums)",
-    headline: "Decoupling from spot BTC; capturing 60% of upside with 40% less volatility.",
-    source: "VisionTrack Quant Index, 21e6 Capital",
-    color: "purple"
-  },
-  {
-    id: 4,
-    asset: "UAE Commercial Real Estate",
-    class: "uae",
-    sixYearReturn: 1.25,
-    annualizedReturn: 0.162,
-    sharpe: 0.80,
-    maxDrawdown: 0.18,
-    ytd2026: 0.08,
-    liquidity: "Months (direct) / T+2 (Emirates REIT, thin)",
-    minInvestment: "$500k–$2M+ (direct) or $3k (REIT)",
-    headline: "7–9% gross yields; logistics/warehouse booming. Lower supply risk than residential.",
-    source: "JLL, Emirates REIT, DLD",
-    color: "teal"
-  },
-  {
-    id: 5,
-    asset: "S&P 500 (SPY)",
-    class: "equity",
-    sixYearReturn: 1.42,
-    annualizedReturn: 0.179,
-    sharpe: 0.79,
-    maxDrawdown: 0.25,
-    ytd2026: 0.03,
-    liquidity: "Instant (T+1)",
-    minInvestment: "$1 (ETF)",
-    headline: "Shiller PE implied 10-year return: 2% (vs historical 6.4%). Rich valuations cap upside.",
-    source: "Yahoo Finance, Shiller data",
-    color: "blue"
-  },
-  {
-    id: 6,
-    asset: "Nasdaq-100 (QQQ)",
-    class: "equity",
-    sixYearReturn: 1.58,
-    annualizedReturn: 0.212,
-    sharpe: 0.70,
-    maxDrawdown: 0.28,
-    ytd2026: 0.02,
-    liquidity: "Instant (T+1)",
-    minInvestment: "$1 (ETF)",
-    headline: "1Y Sharpe: 1.09 (per latest data). AI rotation pressuring software valuations.",
-    source: "Yahoo Finance, Morningstar",
-    color: "indigo"
-  },
-  {
-    id: 7,
-    asset: "Oil (USO)",
-    class: "commodity",
-    sixYearReturn: 0.95,
-    annualizedReturn: 0.14,
-    sharpe: 0.37,
-    maxDrawdown: 0.62,
-    ytd2026: 0.36,
-    liquidity: "Instant (T+1)",
-    minInvestment: "$1 (ETF)",
-    headline: "Iran conflict sent prices to $119; Goldman Q4 forecast $71. Extreme volatility.",
-    source: "CME, EIA, Goldman Sachs",
-    color: "orange"
-  },
-  {
-    id: 8,
-    asset: "Apple (AAPL)",
-    class: "equity",
-    sixYearReturn: 2.35,
-    annualizedReturn: 0.274,
-    sharpe: -142.85,
-    maxDrawdown: 0.35,
-    ytd2026: -0.05,
-    liquidity: "Instant (T+1)",
-    minInvestment: "$1 (fractional shares)",
-    headline: "1Y Sharpe negative triple digits — volatility not compensated. Structural rotation away from mega-cap tech.",
-    source: "Yahoo Finance",
-    color: "gray"
-  },
-  {
-    id: 9,
-    asset: "Bitcoin (BTC-USD)",
-    class: "crypto",
-    sixYearReturn: 9.50,
-    annualizedReturn: 0.58,
-    sharpe: -0.63,
-    maxDrawdown: 0.76,
-    ytd2026: -0.10,
-    liquidity: "Instant (seconds)",
-    minInvestment: "$1 (fractional)",
-    headline: "365D Sharpe -0.63, 180D -2.87 (worst since 2022). MVRV Z-score 0.49 (neutral).",
-    source: "CoinGecko, CryptoQuant, Binance",
-    color: "yellow"
-  },
-  {
-    id: 10,
-    asset: "US REITs (VNQ)",
-    class: "reit",
-    sixYearReturn: 0.25,
-    annualizedReturn: 0.048,
-    sharpe: 0.13,
-    maxDrawdown: 0.44,
-    ytd2026: 0.01,
-    liquidity: "Instant (T+1)",
-    minInvestment: "$1 (ETF)",
-    headline: "Dividend yields 4–10%, but still recovering from 2022–2023 rate shock.",
-    source: "Vanguard, Nareit",
-    color: "pink"
-  },
-  {
-    id: 11,
-    asset: "Long Treasuries (TLT)",
-    class: "fixed",
-    sixYearReturn: -0.35,
-    annualizedReturn: -0.083,
-    sharpe: -0.63,
-    maxDrawdown: 0.48,
-    ytd2026: -0.02,
-    liquidity: "Instant (T+1)",
-    minInvestment: "$1 (ETF)",
-    headline: "10Y yield at 4.15%; 30Y at 4.77%. Duration pain persists.",
-    source: "Treasury.gov, iShares",
-    color: "slate"
-  },
-  {
-    id: 12,
-    asset: "Crypto Mining (MARA)",
-    class: "crypto",
-    sixYearReturn: 26.50,
-    annualizedReturn: 0.825,
-    sharpe: -0.80,
-    maxDrawdown: 0.90,
-    ytd2026: -0.30,
-    liquidity: "Instant (T+1)",
-    minInvestment: "$1 (fractional)",
-    headline: "Leveraged BTC play — amplified downside when BTC Sharpe negative. -92% peak drawdown.",
-    source: "Yahoo Finance, company filings",
-    color: "red"
-  },
-  {
-    id: 13,
-    asset: "Ethereum (ETH-USD)",
-    class: "crypto",
-    sixYearReturn: 8.20,
-    annualizedReturn: 0.538,
-    sharpe: -0.48,
-    maxDrawdown: 0.80,
-    ytd2026: -0.12,
-    liquidity: "Instant (seconds)",
-    minInvestment: "$1",
-    headline: "Similar profile to BTC; DeFi growth offset by 2022 scars.",
-    source: "CoinGecko",
-    color: "violet"
-  }
-];
-
-// Helper functions for formatting
-const formatPercent = (val) => {
-  if (val === undefined || val === null) return '—';
-  return new Intl.NumberFormat('en-US', { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(val);
-};
-
-const formatDecimal = (val, digits = 2) => {
-  if (val === undefined || val === null) return '—';
-  return val.toFixed(digits);
-};
-
-const formatLargeReturn = (val) => {
-  if (val === undefined || val === null) return '—';
-  if (val > 10) return `${val.toFixed(1)}x`;
-  return formatPercent(val);
-};
-
-const getSortIcon = (activeDim) => (dim) => {
-  if (activeDim !== dim) return <i className="fas fa-sort text-gray-600 ml-1 text-xs"></i>;
-  return <i className="fas fa-sort-down text-amber-400 ml-1"></i>;
-};
-
-// -------------------- MAIN COMPONENT --------------------
-const HedgeNowTracker = () => {
-  // State
-  const [sortBy, setSortBy] = useState('sharpe'); // default: sharpe
-  const [sortAsc, setSortAsc] = useState(false);
-  const [filterClass, setFilterClass] = useState('all');
-  const [expandedId, setExpandedId] = useState(null);
-  
-  // Dimensions available for sorting
-  const dimensions = [
-    { key: 'sixYearReturn', label: '6Y Return', format: 'largeReturn' },
-    { key: 'annualizedReturn', label: 'Ann. Return', format: 'percent' },
-    { key: 'sharpe', label: 'Sharpe', format: 'decimal2' },
-    { key: 'maxDrawdown', label: 'Max DD (safest)', format: 'percent', reverseSense: true },
-    { key: 'ytd2026', label: '2026 YTD', format: 'percent' }
-  ];
-  
-  // Handle sort change
-  const handleSort = (dim) => {
-    if (sortBy === dim) {
-      setSortAsc(!sortAsc);
-    } else {
-      setSortBy(dim);
-      // Determine default direction
-      const dimConfig = dimensions.find(d => d.key === dim);
-      if (dimConfig?.reverseSense) {
-        setSortAsc(true); // for max drawdown, ascending = smallest drawdown first (safest)
-      } else {
-        setSortAsc(false); // descending for others (best first)
-      }
-    }
-  };
-  
-  // Filter and sort data
-  const processedData = ASSET_DATA
-    .filter(item => filterClass === 'all' || item.class === filterClass)
-    .sort((a, b) => {
-      let aVal = a[sortBy];
-      let bVal = b[sortBy];
-      
-      // Handle special cases
-      if (sortBy === 'maxDrawdown') {
-        // For max drawdown, we want smallest (safest) first
-        return sortAsc ? aVal - bVal : bVal - aVal;
-      } else {
-        // For returns, sharpe: we want largest first
-        return sortAsc ? aVal - bVal : bVal - aVal;
-      }
-    });
-  
-  // Format cell based on dimension
-  const formatCell = (item, dimKey) => {
-    const val = item[dimKey];
-    const dim = dimensions.find(d => d.key === dimKey);
-    if (!dim) return val;
-    
-    switch(dim.format) {
-      case 'percent':
-        return formatPercent(val);
-      case 'decimal2':
-        return formatDecimal(val, 2);
-      case 'largeReturn':
-        return formatLargeReturn(val);
-      default:
-        return val;
-    }
-  };
-  
-  // Color coding for values
-  const getValueColor = (dimKey, val) => {
-    if (val === undefined || val === null) return 'text-gray-400';
-    
-    if (dimKey === 'sharpe') {
-      if (val > 1) return 'text-emerald-400 font-semibold';
-      if (val > 0) return 'text-emerald-300';
-      if (val < -0.5) return 'text-red-400';
-      if (val < 0) return 'text-orange-300';
-      return 'text-gray-300';
-    }
-    
-    if (dimKey === 'maxDrawdown') {
-      if (val < 0.15) return 'text-emerald-400 font-semibold';
-      if (val < 0.25) return 'text-emerald-300';
-      if (val > 0.5) return 'text-red-400';
-      if (val > 0.35) return 'text-orange-300';
-      return 'text-gray-300';
-    }
-    
-    if (dimKey.includes('Return') || dimKey === 'ytd2026') {
-      if (val > 0.2) return 'text-emerald-400';
-      if (val > 0.05) return 'text-emerald-300';
-      if (val < 0) return 'text-red-400';
-      return 'text-gray-300';
-    }
-    
-    return 'text-gray-300';
-  };
-  
-  return (
-    <div className="min-h-screen bg-[#0b0f15] text-gray-200 p-4 md:p-6">
-      {/* Header */}
-      <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
-          <div>
-            <h1 className="text-3xl font-bold text-white flex items-center gap-3">
-              <span className="bg-amber-500/20 p-2 rounded-lg">
-                <i className="fas fa-chart-line text-amber-400"></i>
-              </span>
-              HedgeNow Data Library
-            </h1>
-            <p className="text-gray-400 mt-1 text-sm">
-              Institutional-grade alternative asset intelligence · Updated March 2026
-            </p>
-          </div>
-          <div className="mt-3 md:mt-0 flex items-center gap-2">
-            <span className="text-xs bg-gray-800 px-3 py-1.5 rounded-full text-gray-300">
-              <i className="far fa-calendar-alt mr-1"></i> Last update: Mar 12, 2026
-            </span>
-          </div>
-        </div>
-        
-        {/* Filters */}
-        <div className="bg-gray-900/60 border border-gray-800 rounded-xl p-4 mb-6">
-          <div className="flex flex-wrap items-center gap-4">
-            <div className="flex items-center gap-2">
-              <i className="fas fa-filter text-gray-500 text-sm"></i>
-              <span className="text-sm font-medium text-gray-300">Asset Class:</span>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo-area">
+                <div class="logo-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="title">
+                    <h1>HedgeNow Data Library</h1>
+                    <p>Institutional-grade alternative asset intelligence</p>
+                </div>
             </div>
-            <div className="flex flex-wrap gap-2">
-              {[
+            <div class="update-badge">
+                <i class="far fa-calendar-alt"></i> Updated March 12, 2026
+            </div>
+        </div>
+
+        <div id="app">
+            <!-- App will be rendered here -->
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // ---------- MASTER DATA ----------
+            const ASSET_DATA = [
+                {
+                    id: 1,
+                    asset: "Gold (GLD)",
+                    class: "commodity",
+                    sixYearReturn: 0.98,
+                    annualizedReturn: 0.148,
+                    sharpe: 1.32,
+                    maxDrawdown: 0.22,
+                    ytd2026: 0.20,
+                    liquidity: "Instant (T+1)",
+                    minInvestment: "$1 (ETF) or physical from $50k",
+                    headline: "Central bank buying creates structural floor near $5,000. China's 16th consecutive month of purchases.",
+                    source: "LBMA, Bloomberg, World Gold Council",
+                    dotColor: "#f59e0b"
+                },
+                {
+                    id: 2,
+                    asset: "UAE Residential Real Estate",
+                    class: "uae",
+                    sixYearReturn: 1.85,
+                    annualizedReturn: 0.21,
+                    sharpe: 1.10,
+                    maxDrawdown: 0.12,
+                    ytd2026: 0.14,
+                    liquidity: "Weeks to months (direct property)",
+                    minInvestment: "$250k–$400k (Dubai off-plan/prime resale)",
+                    headline: "14% YTD price growth; 36,831 transactions in first 10 weeks of 2026. Prime areas outperform.",
+                    source: "DLD, DXBInteract, Property Monitor",
+                    dotColor: "#10b981"
+                },
+                {
+                    id: 3,
+                    asset: "Algo Crypto Hedge Funds",
+                    class: "crypto",
+                    sixYearReturn: 2.80,
+                    annualizedReturn: 0.28,
+                    sharpe: 0.90,
+                    maxDrawdown: 0.25,
+                    ytd2026: 0.12,
+                    liquidity: "Quarterly with notice",
+                    minInvestment: "$100k–$1M (fund minimums)",
+                    headline: "Decoupling from spot BTC; capturing 60% of upside with 40% less volatility.",
+                    source: "VisionTrack Quant Index, 21e6 Capital",
+                    dotColor: "#8b5cf6"
+                },
+                {
+                    id: 4,
+                    asset: "UAE Commercial Real Estate",
+                    class: "uae",
+                    sixYearReturn: 1.25,
+                    annualizedReturn: 0.162,
+                    sharpe: 0.80,
+                    maxDrawdown: 0.18,
+                    ytd2026: 0.08,
+                    liquidity: "Months (direct) / T+2 (Emirates REIT)",
+                    minInvestment: "$500k–$2M+ (direct) or $3k (REIT)",
+                    headline: "7–9% gross yields; logistics/warehouse booming. Lower supply risk than residential.",
+                    source: "JLL, Emirates REIT, DLD",
+                    dotColor: "#14b8a6"
+                },
+                {
+                    id: 5,
+                    asset: "S&P 500 (SPY)",
+                    class: "equity",
+                    sixYearReturn: 1.42,
+                    annualizedReturn: 0.179,
+                    sharpe: 0.79,
+                    maxDrawdown: 0.25,
+                    ytd2026: 0.03,
+                    liquidity: "Instant (T+1)",
+                    minInvestment: "$1 (ETF)",
+                    headline: "Shiller PE implied 10-year return: 2% (vs historical 6.4%). Rich valuations cap upside.",
+                    source: "Yahoo Finance, Shiller data",
+                    dotColor: "#3b82f6"
+                },
+                {
+                    id: 6,
+                    asset: "Nasdaq-100 (QQQ)",
+                    class: "equity",
+                    sixYearReturn: 1.58,
+                    annualizedReturn: 0.212,
+                    sharpe: 0.70,
+                    maxDrawdown: 0.28,
+                    ytd2026: 0.02,
+                    liquidity: "Instant (T+1)",
+                    minInvestment: "$1 (ETF)",
+                    headline: "1Y Sharpe: 1.09. AI rotation pressuring software valuations.",
+                    source: "Yahoo Finance, Morningstar",
+                    dotColor: "#6366f1"
+                },
+                {
+                    id: 7,
+                    asset: "Oil (USO)",
+                    class: "commodity",
+                    sixYearReturn: 0.95,
+                    annualizedReturn: 0.14,
+                    sharpe: 0.37,
+                    maxDrawdown: 0.62,
+                    ytd2026: 0.36,
+                    liquidity: "Instant (T+1)",
+                    minInvestment: "$1 (ETF)",
+                    headline: "Iran conflict sent prices to $119; Goldman Q4 forecast $71. Extreme volatility.",
+                    source: "CME, EIA, Goldman Sachs",
+                    dotColor: "#f97316"
+                },
+                {
+                    id: 8,
+                    asset: "Apple (AAPL)",
+                    class: "equity",
+                    sixYearReturn: 2.35,
+                    annualizedReturn: 0.274,
+                    sharpe: -142.85,
+                    maxDrawdown: 0.35,
+                    ytd2026: -0.05,
+                    liquidity: "Instant (T+1)",
+                    minInvestment: "$1 (fractional shares)",
+                    headline: "1Y Sharpe negative triple digits — volatility not compensated. Rotation away from mega-cap tech.",
+                    source: "Yahoo Finance",
+                    dotColor: "#6b7280"
+                },
+                {
+                    id: 9,
+                    asset: "Bitcoin (BTC-USD)",
+                    class: "crypto",
+                    sixYearReturn: 9.50,
+                    annualizedReturn: 0.58,
+                    sharpe: -0.63,
+                    maxDrawdown: 0.76,
+                    ytd2026: -0.10,
+                    liquidity: "Instant (seconds)",
+                    minInvestment: "$1 (fractional)",
+                    headline: "365D Sharpe -0.63, 180D -2.87 (worst since 2022). MVRV Z-score 0.49 (neutral).",
+                    source: "CoinGecko, CryptoQuant",
+                    dotColor: "#fbbf24"
+                },
+                {
+                    id: 10,
+                    asset: "US REITs (VNQ)",
+                    class: "reit",
+                    sixYearReturn: 0.25,
+                    annualizedReturn: 0.048,
+                    sharpe: 0.13,
+                    maxDrawdown: 0.44,
+                    ytd2026: 0.01,
+                    liquidity: "Instant (T+1)",
+                    minInvestment: "$1 (ETF)",
+                    headline: "Dividend yields 4–10%, but still recovering from 2022–2023 rate shock.",
+                    source: "Vanguard, Nareit",
+                    dotColor: "#ec4899"
+                },
+                {
+                    id: 11,
+                    asset: "Long Treasuries (TLT)",
+                    class: "fixed",
+                    sixYearReturn: -0.35,
+                    annualizedReturn: -0.083,
+                    sharpe: -0.63,
+                    maxDrawdown: 0.48,
+                    ytd2026: -0.02,
+                    liquidity: "Instant (T+1)",
+                    minInvestment: "$1 (ETF)",
+                    headline: "10Y yield at 4.15%; 30Y at 4.77%. Duration pain persists.",
+                    source: "Treasury.gov, iShares",
+                    dotColor: "#475569"
+                },
+                {
+                    id: 12,
+                    asset: "Crypto Mining (MARA)",
+                    class: "crypto",
+                    sixYearReturn: 26.50,
+                    annualizedReturn: 0.825,
+                    sharpe: -0.80,
+                    maxDrawdown: 0.90,
+                    ytd2026: -0.30,
+                    liquidity: "Instant (T+1)",
+                    minInvestment: "$1 (fractional)",
+                    headline: "Leveraged BTC play — amplified downside when BTC Sharpe negative. -92% peak drawdown.",
+                    source: "Yahoo Finance, company filings",
+                    dotColor: "#ef4444"
+                },
+                {
+                    id: 13,
+                    asset: "Ethereum (ETH-USD)",
+                    class: "crypto",
+                    sixYearReturn: 8.20,
+                    annualizedReturn: 0.538,
+                    sharpe: -0.48,
+                    maxDrawdown: 0.80,
+                    ytd2026: -0.12,
+                    liquidity: "Instant (seconds)",
+                    minInvestment: "$1",
+                    headline: "Similar profile to BTC; DeFi growth offset by 2022 scars.",
+                    source: "CoinGecko",
+                    dotColor: "#8b5cf6"
+                }
+            ];
+
+            // Helper functions
+            function formatPercent(value) {
+                if (value === undefined || value === null) return '—';
+                return (value * 100).toFixed(1) + '%';
+            }
+
+            function formatDecimal(value, digits = 2) {
+                if (value === undefined || value === null) return '—';
+                return value.toFixed(digits);
+            }
+
+            function formatReturn(value) {
+                if (value === undefined || value === null) return '—';
+                if (value > 10) return value.toFixed(1) + 'x';
+                return formatPercent(value);
+            }
+
+            function getValueClass(field, value) {
+                if (field === 'sharpe') {
+                    if (value > 1) return 'text-positive font-semibold';
+                    if (value > 0) return 'text-positive';
+                    if (value < -0.5) return 'text-danger';
+                    if (value < 0) return 'text-warning';
+                    return '';
+                }
+                if (field === 'maxDrawdown') {
+                    if (value < 0.15) return 'text-positive font-semibold';
+                    if (value < 0.25) return 'text-positive';
+                    if (value > 0.5) return 'text-danger';
+                    if (value > 0.35) return 'text-warning';
+                    return '';
+                }
+                if (field.includes('Return') || field === 'ytd2026') {
+                    if (value > 0.2) return 'text-positive';
+                    if (value > 0.05) return 'text-positive';
+                    if (value < 0) return 'text-danger';
+                    return '';
+                }
+                return '';
+            }
+
+            // Filter options
+            const filterOptions = [
                 { value: 'all', label: 'All Assets', icon: 'fa-layer-group' },
                 { value: 'crypto', label: 'Crypto', icon: 'fa-bitcoin' },
                 { value: 'uae', label: 'UAE Real Estate', icon: 'fa-building' },
@@ -445,170 +643,217 @@ const HedgeNowTracker = () => {
                 { value: 'commodity', label: 'Commodities', icon: 'fa-droplet' },
                 { value: 'reit', label: 'REITs', icon: 'fa-warehouse' },
                 { value: 'fixed', label: 'Fixed Income', icon: 'fa-coins' }
-              ].map(cls => (
-                <button
-                  key={cls.value}
-                  onClick={() => setFilterClass(cls.value)}
-                  className={`px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 transition ${
-                    filterClass === cls.value 
-                      ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' 
-                      : 'bg-gray-800 text-gray-400 hover:bg-gray-700 border border-transparent'
-                  }`}
-                >
-                  <i className={`fas ${cls.icon} ${filterClass === cls.value ? 'text-amber-400' : 'text-gray-500'}`}></i>
-                  {cls.label}
-                </button>
-              ))}
-            </div>
-          </div>
-          
-          <div className="text-xs text-gray-500 mt-3 border-t border-gray-800 pt-3">
-            <i className="fas fa-info-circle mr-1"></i> Click any row to expand details (liquidity, min investment, source, headline)
-          </div>
-        </div>
-        
-        {/* Table */}
-        <div className="bg-gray-900/40 border border-gray-800 rounded-xl overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-gray-800/80 text-gray-300 text-xs uppercase tracking-wider">
-                <tr>
-                  <th className="px-4 py-3 text-left font-medium">Asset</th>
-                  {dimensions.map(dim => (
-                    <th 
-                      key={dim.key}
-                      className="px-4 py-3 text-left font-medium cursor-pointer hover:text-amber-300 transition group"
-                      onClick={() => handleSort(dim.key)}
-                    >
-                      <div className="flex items-center gap-1">
-                        {dim.label}
-                        {sortBy === dim.key ? (
-                          <i className={`fas fa-sort-${sortAsc ? 'up' : 'down'} text-amber-400 text-xs`}></i>
-                        ) : (
-                          <i className="fas fa-sort text-gray-600 group-hover:text-gray-400 text-xs"></i>
-                        )}
-                      </div>
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-800">
-                {processedData.map(item => (
-                  <>
-                    <tr 
-                      key={item.id}
-                      onClick={() => setExpandedId(expandedId === item.id ? null : item.id)}
-                      className={`hover-highlight border-l-2 border-l-transparent hover:border-l-amber-500 transition ${
-                        expandedId === item.id ? 'expanded-row border-l-amber-500' : ''
-                      }`}
-                    >
-                      <td className="px-4 py-3 font-medium">
-                        <div className="flex items-center gap-2">
-                          <div className={`w-2 h-2 rounded-full bg-${item.color}-500`}></div>
-                          {item.asset}
-                        </div>
-                      </td>
-                      <td className={`px-4 py-3 ${getValueColor('sixYearReturn', item.sixYearReturn)}`}>
-                        {formatLargeReturn(item.sixYearReturn)}
-                      </td>
-                      <td className={`px-4 py-3 ${getValueColor('annualizedReturn', item.annualizedReturn)}`}>
-                        {formatPercent(item.annualizedReturn)}
-                      </td>
-                      <td className={`px-4 py-3 ${getValueColor('sharpe', item.sharpe)}`}>
-                        {formatDecimal(item.sharpe, 2)}
-                      </td>
-                      <td className={`px-4 py-3 ${getValueColor('maxDrawdown', item.maxDrawdown)}`}>
-                        {formatPercent(item.maxDrawdown)}
-                      </td>
-                      <td className={`px-4 py-3 ${getValueColor('ytd2026', item.ytd2026)}`}>
-                        {formatPercent(item.ytd2026)}
-                      </td>
-                    </tr>
+            ];
+
+            // Sort dimensions
+            const dimensions = [
+                { key: 'sixYearReturn', label: '6Y Return', format: 'return' },
+                { key: 'annualizedReturn', label: 'Ann. Return', format: 'percent' },
+                { key: 'sharpe', label: 'Sharpe', format: 'decimal' },
+                { key: 'maxDrawdown', label: 'Max DD (safest)', format: 'percent' },
+                { key: 'ytd2026', label: '2026 YTD', format: 'percent' }
+            ];
+
+            // App state
+            let state = {
+                filterClass: 'all',
+                sortBy: 'sharpe',
+                sortAsc: false,
+                expandedId: null
+            };
+
+            // Render function
+            function renderApp() {
+                const appEl = document.getElementById('app');
+                
+                // Filter data
+                let filtered = state.filterClass === 'all' 
+                    ? [...ASSET_DATA] 
+                    : ASSET_DATA.filter(item => item.class === state.filterClass);
+                
+                // Sort data
+                filtered.sort((a, b) => {
+                    let aVal = a[state.sortBy];
+                    let bVal = b[state.sortBy];
                     
-                    {/* Expanded row */}
-                    {expandedId === item.id && (
-                      <tr className="bg-gray-800/40">
-                        <td colSpan="6" className="px-4 py-4">
-                          <div className="grid md:grid-cols-2 gap-4">
-                            <div>
-                              <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Headline</h4>
-                              <p className="text-sm text-gray-200">{item.headline}</p>
-                              
-                              <div className="mt-3 flex flex-wrap gap-4">
-                                <div>
-                                  <span className="text-xs text-gray-500 block">Liquidity</span>
-                                  <span className="text-sm font-medium">{item.liquidity}</span>
+                    if (state.sortBy === 'maxDrawdown') {
+                        return state.sortAsc ? aVal - bVal : bVal - aVal;
+                    } else {
+                        return state.sortAsc ? aVal - bVal : bVal - aVal;
+                    }
+                });
+
+                // Build HTML
+                let html = `
+                    <!-- Filter Bar -->
+                    <div class="filter-bar">
+                        <div class="filter-label">
+                            <i class="fas fa-filter"></i>
+                            <span>Asset Class:</span>
+                        </div>
+                        <div class="filter-buttons">
+                `;
+
+                // Filter buttons
+                filterOptions.forEach(opt => {
+                    html += `
+                        <button class="filter-btn ${state.filterClass === opt.value ? 'active' : ''}" 
+                                onclick="setFilter('${opt.value}')">
+                            <i class="fas ${opt.icon}"></i>
+                            ${opt.label}
+                        </button>
+                    `;
+                });
+
+                html += `
+                        </div>
+                        <div class="info-note">
+                            <i class="fas fa-info-circle"></i> Click any row to expand details (liquidity, min investment, source)
+                        </div>
+                    </div>
+
+                    <!-- Table -->
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Asset</th>
+                `;
+
+                // Table headers with sort
+                dimensions.forEach(dim => {
+                    const isActive = state.sortBy === dim.key;
+                    const icon = isActive 
+                        ? (state.sortAsc ? 'fa-sort-up' : 'fa-sort-down')
+                        : 'fa-sort';
+                    
+                    html += `
+                        <th onclick="setSort('${dim.key}')">
+                            ${dim.label}
+                            <i class="fas ${icon} ${isActive ? 'active-sort' : ''}"></i>
+                        </th>
+                    `;
+                });
+
+                html += `</tr></thead><tbody>`;
+
+                // Table rows
+                if (filtered.length === 0) {
+                    html += `
+                        <tr>
+                            <td colspan="6">
+                                <div class="empty-state">
+                                    <i class="fas fa-database"></i>
+                                    <p>No assets match the selected filter</p>
                                 </div>
-                                <div>
-                                  <span className="text-xs text-gray-500 block">Min Investment</span>
-                                  <span className="text-sm font-medium">{item.minInvestment}</span>
-                                </div>
-                              </div>
-                            </div>
-                            <div>
-                              <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Data Source</h4>
-                              <p className="text-sm text-gray-300 mb-3">{item.source}</p>
-                              
-                              <div className="flex items-center gap-2">
-                                <span className={`badge-${item.sharpe > 0.5 ? 'positive' : item.sharpe < 0 ? 'negative' : 'neutral'}`}>
-                                  Sharpe: {formatDecimal(item.sharpe, 2)}
-                                </span>
-                                <span className="badge-neutral">
-                                  YTD: {formatPercent(item.ytd2026)}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                    )}
-                  </>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          
-          {processedData.length === 0 && (
-            <div className="p-8 text-center text-gray-500">
-              <i className="fas fa-database text-4xl mb-3 opacity-30"></i>
-              <p>No assets match the selected filter</p>
-            </div>
-          )}
-          
-          {/* Footer summary */}
-          <div className="bg-gray-800/30 px-4 py-3 text-xs text-gray-500 border-t border-gray-800 flex flex-wrap justify-between items-center">
-            <span><i className="far fa-clock mr-1"></i> {processedData.length} assets displayed</span>
-            <span className="text-amber-400/70">*Risk-free rate: 4.25% (10Y Treasury)</span>
-          </div>
-        </div>
-        
-        {/* Methodology & disclaimer */}
-        <div className="mt-8 text-xs text-gray-600 border-t border-gray-800 pt-6">
-          <div className="flex flex-wrap gap-6 justify-between">
-            <div>
-              <span className="font-medium text-gray-400">Methodology:</span> Sharpe = (Return - Rf) / Vol · Max DD = peak-to-trough · 6Y = Nov 2019–Mar 2026
-            </div>
-            <div>
-              <span className="text-gray-500">© 2026 HedgeNow · </span>
-              <a href="#" className="text-amber-400/70 hover:text-amber-400">Terms</a>
-              <span className="text-gray-600 mx-2">·</span>
-              <a href="#" className="text-amber-400/70 hover:text-amber-400">Data sources</a>
-            </div>
-          </div>
-          <div className="mt-3 text-gray-700">
-            <i className="fas fa-exclamation-triangle mr-1 text-xs"></i> 
-            DISCLAIMER: For informational purposes only. Past performance does not guarantee future results.
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
+                            </td>
+                        </tr>
+                    `;
+                } else {
+                    filtered.forEach(item => {
+                        const isExpanded = state.expandedId === item.id;
+                        
+                        html += `
+                            <tr onclick="toggleRow(${item.id})" class="${isExpanded ? 'row-expanded' : ''}">
+                                <td>
+                                    <div class="asset-name">
+                                        <span class="asset-dot" style="background: ${item.dotColor}"></span>
+                                        ${item.asset}
+                                    </div>
+                                </td>
+                                <td class="${getValueClass('sixYearReturn', item.sixYearReturn)}">${formatReturn(item.sixYearReturn)}</td>
+                                <td class="${getValueClass('annualizedReturn', item.annualizedReturn)}">${formatPercent(item.annualizedReturn)}</td>
+                                <td class="${getValueClass('sharpe', item.sharpe)}">${formatDecimal(item.sharpe)}</td>
+                                <td class="${getValueClass('maxDrawdown', item.maxDrawdown)}">${formatPercent(item.maxDrawdown)}</td>
+                                <td class="${getValueClass('ytd2026', item.ytd2026)}">${formatPercent(item.ytd2026)}</td>
+                            </tr>
+                        `;
 
-// Render to root
-ReactDOM.createRoot(document.getElementById('root')).render(<HedgeNowTracker />);
+                        // Expanded row
+                        if (isExpanded) {
+                            html += `
+                                <tr>
+                                    <td colspan="6" style="padding: 0;">
+                                        <div class="expanded-content">
+                                            <div class="detail-grid">
+                                                <div class="detail-section">
+                                                    <h4>Headline</h4>
+                                                    <p>${item.headline}</p>
+                                                    <div class="meta-tags">
+                                                        <span class="meta-tag"><i class="fas fa-clock"></i> ${item.liquidity}</span>
+                                                        <span class="meta-tag"><i class="fas fa-coins"></i> ${item.minInvestment}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="detail-section">
+                                                    <h4>Data Source</h4>
+                                                    <p>${item.source}</p>
+                                                    <div style="margin-top: 1rem;">
+                                                        <span class="badge ${item.sharpe > 0.5 ? 'badge-positive' : (item.sharpe < 0 ? 'badge-negative' : 'badge-neutral')}">
+                                                            Sharpe: ${formatDecimal(item.sharpe)}
+                                                        </span>
+                                                        <span class="badge badge-neutral" style="margin-left: 0.5rem;">
+                                                            YTD: ${formatPercent(item.ytd2026)}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            `;
+                        }
+                    });
+                }
 
-</script>
+                html += `
+                            </tbody>
+                        </table>
+                    </div>
 
+                    <!-- Footer -->
+                    <div class="footer">
+                        <div>
+                            <i class="far fa-clock"></i> ${filtered.length} assets displayed · Rf: 4.25%
+                        </div>
+                        <div class="footer-links">
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="#"><i class="fab fa-github"></i></a>
+                        </div>
+                    </div>
+                    <div class="disclaimer">
+                        <i class="fas fa-exclamation-triangle"></i> DISCLAIMER: For informational purposes only. Past performance does not guarantee future results.
+                    </div>
+                `;
+
+                appEl.innerHTML = html;
+            }
+
+            // Global functions for event handlers
+            window.setFilter = function(value) {
+                state.filterClass = value;
+                state.expandedId = null;
+                renderApp();
+            };
+
+            window.setSort = function(key) {
+                if (state.sortBy === key) {
+                    state.sortAsc = !state.sortAsc;
+                } else {
+                    state.sortBy = key;
+                    state.sortAsc = (key === 'maxDrawdown'); // ascending for max drawdown (safest first)
+                }
+                renderApp();
+            };
+
+            window.toggleRow = function(id) {
+                state.expandedId = state.expandedId === id ? null : id;
+                renderApp();
+            };
+
+            // Initial render
+            renderApp();
+        })();
+    </script>
 </body>
 </html>
